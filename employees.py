@@ -30,8 +30,6 @@ PERCENTAGE_MAX = 100
 PERCENTAGE_MIN = 0
 SALARY_ERROR_MESSAGE = "Salary must be non-negative."
 
-
-# TODO: implement this class. You may delete this comment when you are done.
 class Employee(ABC):
     """
     Abstract base class representing a generic employee in the system.
@@ -40,6 +38,7 @@ class Employee(ABC):
     def __init__(self, name, manager, salary, savings):
         self.relationships = {}
         self.savings = savings
+        self.salary = salary
         self.is_employed = True
         self.__name = name
         self.__manager = manager
@@ -57,6 +56,7 @@ class Employee(ABC):
         return self.__manager
     
     # performance, clamped to 0 or 100 if out of range
+    @performance.setter
     def performance(self, performance):
         # less than 0 (percentage min)
         if performance < PERCENTAGE_MIN:
@@ -68,6 +68,7 @@ class Employee(ABC):
             self.performance = performance
 
     # happiness, clamped to 0 or 100 if out of range
+    @happiness.setter
     def happiness(self, happiness):
         # less than 0 (percentage min)
         if happiness < PERCENTAGE_MIN:
@@ -78,6 +79,7 @@ class Employee(ABC):
         else:
             self.happiness = happiness
 
+    @salary.setter
     def salary(self, salary):
         # salary must be non-negative
         if salary >= 0:
@@ -110,31 +112,76 @@ class Employee(ABC):
                 self.relationships[other.name] -= 1
                 # happiness increases
                 self.happiness -= 1
-        
+      
     def daily_expense(self):
         self.happiness -= 1
         self.savings -= DAILY_EXPENSE
 
     def __str__(self):
-        print(self.name + "\n\tSalary: $" + self.salary + "\n\tSavings: $" + self.savings + "\n\tHappiness: " \
-              + self.happiness + "%\n\tPerformance: " + self.performance + "%")
+        return self.name + "\n\tSalary: $" + str(self.salary) + "\n\tSavings: $" + str(self.savings) + "\n\tHappiness: " + str(self.happiness) + "%\n\tPerformance: " + str(self.performance) + "%"
 
-# TODO: implement this class. You may delete this comment when you are done.
 class Manager(Employee):
     """
     A subclass of Employee representing a manager.
     """
+    def __init__(self, name, manager, salary, savings):
+        super().__init__(name, manager, salary, savings)
 
+    def work(self):
+        change = random.randint(-5, 6)
+        self.performance += change
+        if change <= 0:
+            self.happiness -= 1
+            for employee in self.relationships:
+                self.relationships[employee] -= 1
+        elif change > 1:
+            self.happiness += 1
 
-# TODO: implement this class. You may delete this comment when you are done.
 class TemporaryEmployee(Employee):
     """
     A subclass of Employee representing a temporary employee.
     """
 
+    def __init__(self, name, manager, salary, savings):
+        super().__init__(name, manager, salary, savings)
 
-# TODO: implement this class. You may delete this comment when you are done.
+    def work(self):
+        change = random.randint(-15, 16)
+        self.performance += change
+        if change <= 0:
+            self.happiness -= 2
+        elif change > 1:
+            self.happiness += 1
+
+    def interact(self, other):
+        # if the other employee is the person's manger
+        if other.name == self.manager:
+            if other.happiness >= HAPPINESS_THRESHOLD and \
+                self.performance >= TEMP_EMPLOYEE_PERFORMANCE_THRESHOLD:
+                self.savings += MANAGER_BONUS
+            elif other.happiness <= HAPPINESS_THRESHOLD:
+                self.salary = (self.salary // 2)
+                self.happiness -= 5
+        
+        if self.salary <= 0:
+            self.is_employed = False
+
 class PermanentEmployee(Employee):
     """
     A subclass of Employee representing a permanent employee.
     """
+    def __init__(self, name, manager, salary, savings):
+        super().__init__(name, manager, salary, savings)
+  
+    def work(self):
+        change = random.randint(-10, 11)
+        if change >= 0:
+            self.happiness += 1
+
+    def interact(self, other):
+        if other.name == self.manager:
+            if other.happiness >= HAPPINESS_THRESHOLD and self.performance > \
+                PERM_EMPLOYEE_PERFORMANCE_THRESHOLD:
+                self.savings += MANAGER_BONUS
+            elif other.happiness <= HAPPINESS_THRESHOLD:
+                self.happiness -= 1
