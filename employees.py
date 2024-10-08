@@ -49,12 +49,16 @@ class Employee(ABC):
     @property
     def name(self):
         return self.__name
-    
+
     # manager, read only
     @property
     def manager(self):
         return self.__manager
-    
+
+    @property
+    def performance(self):
+        return self.performance
+
     # performance, clamped to 0 or 100 if out of range
     @performance.setter
     def performance(self, performance):
@@ -66,6 +70,10 @@ class Employee(ABC):
             self.performance = 100
         else:
             self.performance = performance
+
+    @property
+    def happiness(self):
+        return self.happiness
 
     # happiness, clamped to 0 or 100 if out of range
     @happiness.setter
@@ -79,6 +87,10 @@ class Employee(ABC):
         else:
             self.happiness = happiness
 
+    @property
+    def salary(self):
+        return self.salary
+
     @salary.setter
     def salary(self, salary):
         # salary must be non-negative
@@ -86,7 +98,7 @@ class Employee(ABC):
             self.salary = salary
         else:
             raise ValueError
-        
+
     @abstractmethod
     def work(self):
         pass
@@ -112,13 +124,15 @@ class Employee(ABC):
                 self.relationships[other.name] -= 1
                 # happiness increases
                 self.happiness -= 1
-      
+
     def daily_expense(self):
         self.happiness -= 1
         self.savings -= DAILY_EXPENSE
 
     def __str__(self):
-        return self.name + "\n\tSalary: $" + str(self.salary) + "\n\tSavings: $" + str(self.savings) + "\n\tHappiness: " + str(self.happiness) + "%\n\tPerformance: " + str(self.performance) + "%"
+        return self.name + "\n\tSalary: $" + str(self.salary) + "\n\tSavings: $" + \
+              str(self.savings) + "\n\tHappiness: " + str(self.happiness) + "%\n\tPerformance: " + \
+                str(self.performance) + "%"
 
 class Manager(Employee):
     """
@@ -160,9 +174,9 @@ class TemporaryEmployee(Employee):
                 self.performance >= TEMP_EMPLOYEE_PERFORMANCE_THRESHOLD:
                 self.savings += MANAGER_BONUS
             elif other.happiness <= HAPPINESS_THRESHOLD:
-                self.salary = (self.salary // 2)
+                self.salary = self.salary // 2
                 self.happiness -= 5
-        
+
         if self.salary <= 0:
             self.is_employed = False
 
@@ -172,7 +186,7 @@ class PermanentEmployee(Employee):
     """
     def __init__(self, name, manager, salary, savings):
         super().__init__(name, manager, salary, savings)
-  
+
     def work(self):
         change = random.randint(-10, 11)
         if change >= 0:
