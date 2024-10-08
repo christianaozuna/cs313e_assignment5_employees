@@ -45,8 +45,79 @@ class Employee(ABC):
         self.__manager = manager
         self.performance = INITIAL_PERFORMANCE
         self.happiness = INITIAL_HAPPINESS
-        self.salary = salary
 
+    # name, read only
+    @property
+    def name(self):
+        return self.__name
+    
+    # manager, read only
+    @property
+    def manager(self):
+        return self.__manager
+    
+    # performance, clamped to 0 or 100 if out of range
+    def performance(self, performance):
+        # less than 0 (percentage min)
+        if performance < PERCENTAGE_MIN:
+            self.performance = 0
+        # greater than 100 (percentage max)
+        elif performance > PERCENTAGE_MAX:
+            self.performance = 100
+        else:
+            self.performance = performance
+
+    # happiness, clamped to 0 or 100 if out of range
+    def happiness(self, happiness):
+        # less than 0 (percentage min)
+        if happiness < PERCENTAGE_MIN:
+            self.happiness = 0
+        # greater than 100 (percentage max)
+        elif happiness > PERCENTAGE_MAX:
+            self.happiness = 100
+        else:
+            self.happiness = happiness
+
+    def salary(self, salary):
+        # salary must be non-negative
+        if salary >= 0:
+            self.salary = salary
+        else:
+            raise ValueError
+        
+    @abstractmethod
+    def work(self):
+        pass
+
+    def interact(self, other):
+        # if not in dictionary
+        if other.name not in self.relationships:
+            # add and initialize relationship to 0
+            self.relationships[other.name] = 0
+        # if in dictionary
+        elif other.name in self.relationships:
+            # check if relationship > threshold
+            if self.relationships[other.name] >= RELATIONSHIP_THRESHOLD:
+                # employee happiness increase by 1
+                self.happiness += 1
+            # if not above relationship threshold but both employees happiness > happiness threshold
+            elif self.happiness >= HAPPINESS_THRESHOLD and other.happiness >= HAPPINESS_THRESHOLD:
+                # relationship improves by 1
+                self.relationships[other.name] += 1
+            # otherwise
+            else:
+                # relationshup decreases
+                self.relationships[other.name] -= 1
+                # happiness increases
+                self.happiness -= 1
+        
+    def daily_expense(self):
+        self.happiness -= 1
+        self.savings -= DAILY_EXPENSE
+
+    def __str__(self):
+        print(self.name + "\n\tSalary: $" + self.salary + "\n\tSavings: $" + self.savings + "\n\tHappiness: " \
+              + self.happiness + "%\n\tPerformance: " + self.performance + "%")
 
 # TODO: implement this class. You may delete this comment when you are done.
 class Manager(Employee):
