@@ -126,11 +126,11 @@ class Employee(ABC):
         Represents an interaction of one employee with another.
         """
         # if not in dictionary
-        if other.name not in self.relationships:
+        if other not in self.relationships:
             # add and initialize relationship to 0
             self.relationships[other.name] = 0
         # if in dictionary
-        elif other.name in self.relationships:
+        elif other in self.relationships:
             # check if relationship > threshold
             if self.relationships[other.name] >= RELATIONSHIP_THRESHOLD:
                 # employee happiness increase by 1
@@ -162,8 +162,6 @@ class Manager(Employee):
     """
     A subclass of Employee representing a manager.
     """
-    def __init__(self, name, manager, salary, savings):
-        super().__init__(name, manager, salary, savings)
 
     def work(self):
         change = random.randint(-5, 6)
@@ -180,9 +178,6 @@ class TemporaryEmployee(Employee):
     A subclass of Employee representing a temporary employee.
     """
 
-    def __init__(self, name, manager, salary, savings):
-        super().__init__(name, manager, salary, savings)
-
     def work(self):
         change = random.randint(-15, 16)
         self.performance += change
@@ -194,24 +189,20 @@ class TemporaryEmployee(Employee):
     def interact(self, other):
         super().interact(other)
         # if the other employee is the person's manger
-        if other.name == self.manager:
+        if other == self.manager:
             if other.happiness >= HAPPINESS_THRESHOLD and \
                 self._performance >= TEMP_EMPLOYEE_PERFORMANCE_THRESHOLD:
                 self.savings += MANAGER_BONUS
             elif other.happiness <= HAPPINESS_THRESHOLD:
                 self.salary = self.salary // 2
                 self.happiness -= 5
-
-        if self.salary <= 0:
-            self.is_employed = False
+                if self.salary <= 0:
+                    self.is_employed = False
 
 class PermanentEmployee(Employee):
     """
     A subclass of Employee representing a permanent employee.
     """
-    def __init__(self, name, manager, salary, savings):
-        super().__init__(name, manager, salary, savings)
-
     def work(self):
         change = random.randint(-10, 11)
         if change >= 0:
@@ -219,7 +210,7 @@ class PermanentEmployee(Employee):
 
     def interact(self, other):
         super().interact(other)
-        if other.name == self.manager:
+        if other == self.manager:
             if other.happiness >= HAPPINESS_THRESHOLD and self._performance > \
                 PERM_EMPLOYEE_PERFORMANCE_THRESHOLD:
                 self.savings += MANAGER_BONUS
