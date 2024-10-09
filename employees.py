@@ -38,7 +38,7 @@ class Employee(ABC):
     def __init__(self, name, manager, salary, savings):
         self.relationships = {}
         self.savings = savings
-        self.salary = salary
+        self.__salary = salary
         self.is_employed = True
         self.__name = name
         self.__manager = manager
@@ -89,13 +89,13 @@ class Employee(ABC):
 
     @property
     def salary(self):
-        return self.salary
+        return self.__salary
 
     @salary.setter
     def salary(self, value):
         # salary must be non-negative
         if value >= 0:
-            self.salary = value
+            self.__salary = value
         else:
             raise ValueError
 
