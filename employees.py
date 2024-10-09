@@ -43,7 +43,7 @@ class Employee(ABC):
         self.__name = name
         self.__manager = manager
         self.__performance = INITIAL_PERFORMANCE
-        self.happiness = INITIAL_HAPPINESS
+        self.__happiness = INITIAL_HAPPINESS
 
     # name, read only
     @property
@@ -73,19 +73,19 @@ class Employee(ABC):
 
     @property
     def happiness(self):
-        return self.happiness
+        return self.__happiness
 
     # happiness, clamped to 0 or 100 if out of range
     @happiness.setter
     def happiness(self, happiness):
         # less than 0 (percentage min)
         if happiness < PERCENTAGE_MIN:
-            self.happiness = 0
+            self.__happiness = 0
         # greater than 100 (percentage max)
         elif happiness > PERCENTAGE_MAX:
-            self.happiness = 100
+            self.__happiness = 100
         else:
-            self.happiness = happiness
+            self.__happiness = happiness
 
     @property
     def salary(self):
@@ -113,9 +113,9 @@ class Employee(ABC):
             # check if relationship > threshold
             if self.relationships[other.name] >= RELATIONSHIP_THRESHOLD:
                 # employee happiness increase by 1
-                self.happiness += 1
+                self.__happiness += 1
             # if not above relationship threshold but both employees happiness > happiness threshold
-            elif self.happiness >= HAPPINESS_THRESHOLD and other.happiness >= HAPPINESS_THRESHOLD:
+            elif self.__happiness >= HAPPINESS_THRESHOLD and other.happiness >= HAPPINESS_THRESHOLD:
                 # relationship improves by 1
                 self.relationships[other.name] += 1
             # otherwise
@@ -123,16 +123,16 @@ class Employee(ABC):
                 # relationshup decreases
                 self.relationships[other.name] -= 1
                 # happiness increases
-                self.happiness -= 1
+                self.__happiness -= 1
 
     def daily_expense(self):
-        self.happiness -= 1
+        self.__happiness -= 1
         self.savings -= DAILY_EXPENSE
 
     def __str__(self):
         return self.name + "\n\tSalary: $" + str(self.salary) + "\n\tSavings: $" + \
-              str(self.savings) + "\n\tHappiness: " + str(self.happiness) + "%\n\tPerformance: " + \
-                str(self.__performance) + "%"
+              str(self.savings) + "\n\tHappiness: " + str(self.__happiness) + \
+                "%\n\tPerformance: " + str(self.__performance) + "%"
 
 class Manager(Employee):
     """
