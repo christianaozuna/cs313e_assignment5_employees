@@ -205,6 +205,7 @@ class PermanentEmployee(Employee):
     """
     def work(self):
         change = random.randint(-10, 10)
+        self.performance += change
         if change >= 0:
             self.happiness += 1
 
