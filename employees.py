@@ -129,22 +129,20 @@ class Employee(ABC):
         if other not in self.relationships:
             # add and initialize relationship to 0
             self.relationships[other.name] = 0
-        # if in dictionary
-        elif other in self.relationships:
-            # check if relationship > threshold
-            if self.relationships[other.name] >= RELATIONSHIP_THRESHOLD:
-                # employee happiness increase by 1
-                self.__happiness += 1
-            # if not above relationship threshold but both employees happiness > happiness threshold
-            elif self.__happiness >= HAPPINESS_THRESHOLD and other.happiness >= HAPPINESS_THRESHOLD:
-                # relationship improves by 1
-                self.relationships[other.name] += 1
-            # otherwise
-            else:
-                # relationshup decreases
-                self.relationships[other.name] -= 1
-                # happiness increases
-                self.__happiness -= 1
+        # check if relationship > threshold
+        if self.relationships[other.name] >= RELATIONSHIP_THRESHOLD:
+            # employee happiness increase by 1
+            self.__happiness += 1
+        # if not above relationship threshold but both employees happiness > happiness threshold
+        elif self.__happiness >= HAPPINESS_THRESHOLD and other.happiness >= HAPPINESS_THRESHOLD:
+            # relationship improves by 1
+            self.relationships[other.name] += 1
+        # otherwise
+        else:
+            # relationshup decreases
+            self.relationships[other.name] -= 1
+            # happiness increases
+            self.__happiness -= 1
 
     def daily_expense(self):
         """
