@@ -42,7 +42,7 @@ class Employee(ABC):
         self.is_employed = True
         self.__name = name
         self.__manager = manager
-        self.performance = INITIAL_PERFORMANCE
+        self.__performance = INITIAL_PERFORMANCE
         self.happiness = INITIAL_HAPPINESS
 
     # name, read only
@@ -57,19 +57,19 @@ class Employee(ABC):
 
     @property
     def performance(self):
-        return self.performance
+        return self.__performance
 
     # performance, clamped to 0 or 100 if out of range
     @performance.setter
     def performance(self, performance):
         # less than 0 (percentage min)
         if performance < PERCENTAGE_MIN:
-            self.performance = 0
+            self.__performance = 0
         # greater than 100 (percentage max)
         elif performance > PERCENTAGE_MAX:
-            self.performance = 100
+            self.__performance = 100
         else:
-            self.performance = performance
+            self.__performance = performance
 
     @property
     def happiness(self):
@@ -132,7 +132,7 @@ class Employee(ABC):
     def __str__(self):
         return self.name + "\n\tSalary: $" + str(self.salary) + "\n\tSavings: $" + \
               str(self.savings) + "\n\tHappiness: " + str(self.happiness) + "%\n\tPerformance: " + \
-                str(self.performance) + "%"
+                str(self.__performance) + "%"
 
 class Manager(Employee):
     """
@@ -161,7 +161,7 @@ class TemporaryEmployee(Employee):
 
     def work(self):
         change = random.randint(-15, 16)
-        self.performance += change
+        self.__performance += change
         if change <= 0:
             self.happiness -= 2
         elif change > 1:
@@ -171,7 +171,7 @@ class TemporaryEmployee(Employee):
         # if the other employee is the person's manger
         if other.name == self.manager:
             if other.happiness >= HAPPINESS_THRESHOLD and \
-                self.performance >= TEMP_EMPLOYEE_PERFORMANCE_THRESHOLD:
+                self.__performance >= TEMP_EMPLOYEE_PERFORMANCE_THRESHOLD:
                 self.savings += MANAGER_BONUS
             elif other.happiness <= HAPPINESS_THRESHOLD:
                 self.salary = self.salary // 2
@@ -194,7 +194,7 @@ class PermanentEmployee(Employee):
 
     def interact(self, other):
         if other.name == self.manager:
-            if other.happiness >= HAPPINESS_THRESHOLD and self.performance > \
+            if other.happiness >= HAPPINESS_THRESHOLD and self.__performance > \
                 PERM_EMPLOYEE_PERFORMANCE_THRESHOLD:
                 self.savings += MANAGER_BONUS
             elif other.happiness <= HAPPINESS_THRESHOLD:
