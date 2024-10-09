@@ -164,7 +164,7 @@ class Manager(Employee):
     """
 
     def work(self):
-        change = random.randint(-5, 6)
+        change = random.randint(-5, 5)
         self.performance += change
         if change <= 0:
             self.happiness -= 1
@@ -179,7 +179,7 @@ class TemporaryEmployee(Employee):
     """
 
     def work(self):
-        change = random.randint(-15, 16)
+        change = random.randint(-15, 15)
         self.performance += change
         if change <= 0:
             self.happiness -= 2
@@ -204,7 +204,7 @@ class PermanentEmployee(Employee):
     A subclass of Employee representing a permanent employee.
     """
     def work(self):
-        change = random.randint(-10, 11)
+        change = random.randint(-10, 10)
         if change >= 0:
             self.happiness += 1
 
