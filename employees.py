@@ -92,10 +92,10 @@ class Employee(ABC):
         return self.salary
 
     @salary.setter
-    def salary(self, salary):
+    def salary(self, value):
         # salary must be non-negative
-        if salary >= 0:
-            self.salary = salary
+        if value >= 0:
+            self.salary = value
         else:
             raise ValueError
 
