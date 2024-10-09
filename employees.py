@@ -48,20 +48,32 @@ class Employee(ABC):
     # name, read only
     @property
     def name(self):
+        """
+        Read only property returning name.
+        """
         return self.__name
 
     # manager, read only
     @property
     def manager(self):
+        """
+        Read only property returning manager name.
+        """
         return self.__manager
 
     @property
     def performance(self):
+        """
+        Read only property returning performance.
+        """
         return self.__performance
 
     # performance, clamped to 0 or 100 if out of range
     @performance.setter
     def performance(self, performance):
+        """
+        Setter for performance.
+        """
         # less than 0 (percentage min)
         if performance < PERCENTAGE_MIN:
             self.__performance = 0
@@ -73,6 +85,9 @@ class Employee(ABC):
 
     @property
     def happiness(self):
+        """
+        Read only property returning happiness.
+        """
         return self.__happiness
 
     # happiness, clamped to 0 or 100 if out of range
@@ -89,6 +104,9 @@ class Employee(ABC):
 
     @property
     def salary(self):
+        """
+        Read only property returning salary.
+        """
         return self.__salary
 
     @salary.setter
@@ -104,6 +122,9 @@ class Employee(ABC):
         pass
 
     def interact(self, other):
+        """
+        Represents an interaction of one employee with another.
+        """
         # if not in dictionary
         if other.name not in self.relationships:
             # add and initialize relationship to 0
@@ -126,6 +147,9 @@ class Employee(ABC):
                 self.__happiness -= 1
 
     def daily_expense(self):
+        """
+        Simulates the employees daily expenses by reducing their happiness and savings.
+        """
         self.__happiness -= 1
         self.savings -= DAILY_EXPENSE
 
